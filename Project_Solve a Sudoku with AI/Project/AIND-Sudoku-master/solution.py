@@ -1,3 +1,4 @@
+# AIND-Sudoku
 assignments = []
 
 rows = 'ABCDEFGHI'
