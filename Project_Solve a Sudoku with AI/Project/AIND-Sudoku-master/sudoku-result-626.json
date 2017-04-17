@@ -1,0 +1,28 @@
+{
+    "tests": [
+        {
+            "description": "the solve method produces a valid solution.",
+            "traceback": "Traceback (most recent call last):\n  File \"run3.py\", line 99, in test_solve\n    self.assertTrue(s in values,\nTypeError: argument of type 'NoneType' is not iterable\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/home/vmuser_uqwixhdo/utils.py\", line 130, in func_wrapper\n    return func(self)\n  File \"run3.py\", line 103, in test_solve\n    self.fail(\"The solution was not in the correct format.\")\nTypeError: fail() missing 1 required positional argument: 'advice'\n",
+            "message": "The solution was not found.",
+            "advice": "Try your code on the following example:\n.....8..1..1............5.......3...6.3..52.....2....3.3...4....6.51....9........\n",
+            "result": "E",
+            "rubric_item_id": null
+        },
+        {
+            "description": "the naked_twins method applies the 'naked twins' heuristic.",
+            "traceback": "",
+            "message": null,
+            "advice": null,
+            "result": ".",
+            "rubric_item_id": null
+        },
+        {
+            "description": "the README has been modified.",
+            "traceback": "",
+            "message": null,
+            "advice": null,
+            "result": ".",
+            "rubric_item_id": null
+        }
+    ]
+}
