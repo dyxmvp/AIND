@@ -282,7 +282,7 @@ class MinimaxPlayer(IsolationPlayer):
             raise SearchTimeout()
         #self.score(game, self)
         if game.utility(game.active_player) != 0:
-        	return game.utility(game.active_player)
+        	return self.score(game, self)#float('inf')#game.utility(game.active_player)
         moves = game.get_legal_moves(game.active_player)
 
         if depth == 0:
@@ -329,7 +329,7 @@ class MinimaxPlayer(IsolationPlayer):
             raise SearchTimeout()
         #self.score(game, self)
         if game.utility(game.active_player) != 0:
-        	return game.utility(game.active_player)
+        	return self.score(game, self)#float('-inf')#game.utility(game.active_player)
         moves = game.get_legal_moves(game.active_player)
         if depth == 0:
         	return self.score(game, self)
@@ -462,6 +462,9 @@ class AlphaBetaPlayer(IsolationPlayer):
         	if score > best_score:
         		best_move = move
         		best_score = score
+        	if best_score >= beta:
+        		return best_move 
+        	alpha = max(alpha, best_score)       	
         
         return best_move
 
@@ -499,7 +502,7 @@ class AlphaBetaPlayer(IsolationPlayer):
             raise SearchTimeout()
         #self.score(game, self)
         if game.utility(game.active_player) != 0:
-        	return game.utility(game.active_player)
+        	return self.score(game, self)#float('inf')#game.utility(game.active_player)
         moves = game.get_legal_moves(game.active_player)
 
         if depth == 0:
@@ -549,7 +552,7 @@ class AlphaBetaPlayer(IsolationPlayer):
             raise SearchTimeout()
         #self.score(game, self)
         if game.utility(game.active_player) != 0:
-        	return game.utility(game.active_player)
+        	return self.score(game, self)#float('-inf')#game.utility(game.active_player)
         moves = game.get_legal_moves(game.active_player)
         if depth == 0:
         	return self.score(game, self)
@@ -562,5 +565,5 @@ class AlphaBetaPlayer(IsolationPlayer):
         		best_score = score
         	if best_score >= beta:
         		return best_score
-        	alpha = max(alpha, best_score)
+        	alpha = max(alpha, best_score)       	
         return best_score
