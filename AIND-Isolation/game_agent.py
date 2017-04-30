@@ -36,7 +36,14 @@ def custom_score(game, player):
     """
     # TODO: finish this function!
     # This evaluation function is to calculate how many choices the player has
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
     moves = game.get_legal_moves(player)
+    
     return float(len(moves))
 
 
@@ -68,6 +75,12 @@ def custom_score_2(game, player):
     and the how many choices the opponent has. Finally, the difference between
     the two players gives the evaluation of the current state. 
     """
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
     my_moves = game.get_legal_moves(player)
     opponent = game.get_opponent(player)
     opponent_moves = game.get_legal_moves(opponent)
@@ -103,6 +116,12 @@ def custom_score_3(game, player):
     the two players gives the evaluation of the current state. To make the player 
     more aggressive, a larger weight is added to the opponent's choice.
     """    
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
     my_moves = game.get_legal_moves(player)
     opponent = game.get_opponent(player)
     opponent_moves = game.get_legal_moves(opponent)
@@ -385,17 +404,14 @@ class AlphaBetaPlayer(IsolationPlayer):
         # Initialize the best move so that this function returns something
         # in case the search fails due to timeout
         best_move = (-1, -1)
-
-        try:
-            # The try/except block will automatically catch the exception
-            # raised when the timer is about to expire.
-            while self.time_left() > self.TIMER_THRESHOLD:
-            	best_move = self.alphabeta(game, self.search_depth)
-            	self.search_depth = self.search_depth + 1
-            return best_move	
-
-        except SearchTimeout:
-            pass  # Handle any actions required after timeout as needed
+        depth = 1
+        while  True:
+        	try:
+        		best_move = self.alphabeta(game, depth)
+        		depth = depth + 1
+        	except SearchTimeout:
+        		return best_move
+            #pass  # Handle any actions required after timeout as needed
 
         # Return the best move from the last completed search iteration
         return best_move
@@ -450,8 +466,8 @@ class AlphaBetaPlayer(IsolationPlayer):
 
         # TODO: finish this function!      
         moves = game.get_legal_moves(game.active_player)
-        if not moves:
-        	return (-1, -1)
+        #if not moves:
+        #	return (-1, -1)
 
         best_move = None
         best_score = float('-inf')
