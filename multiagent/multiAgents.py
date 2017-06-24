@@ -143,7 +143,73 @@ class MinimaxAgent(MultiAgentSearchAgent):
             Returns the total number of agents in the game
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        self.agentNum = gameState.getNumAgents()
+        depth = self.depth
+
+        maxChild = None
+        maxUtility = float("-inf")
+        utility= float("-inf")
+        agentID = 0
+        for action in gameState.getLegalActions(agentID):
+            newState = gameState.generateSuccessor(agentID, action)
+            (step, utility) = self.minimize(newState, agentID + 1, depth)
+            if utility > maxUtility:
+                maxUtility = utility
+                maxChild = action
+        return maxChild
+
+    def minimize(self, gameState, agentID, depth):
+        if len(gameState.getLegalActions(agentID)) == 0:
+            score = self.evaluationFunction(gameState)
+            return None, score
+
+        minChild = None
+        minUtility = float("inf")
+        utility= float("inf")
+
+        if agentID == self.agentNum - 1:
+            for action in gameState.getLegalActions(agentID):
+                newState = gameState.generateSuccessor(agentID, action)
+                (step, utility) = self.maximize(newState, depth - 1)
+                if utility < minUtility:
+                    minUtility = utility
+                    minChild = action
+
+        else:
+            for action in gameState.getLegalActions(agentID):
+                newState = gameState.generateSuccessor(agentID, action)
+                (step, utility) = self.minimize(newState, agentID + 1, depth)
+                if utility < minUtility:
+                    minUtility = utility
+                    minChild = action
+
+        return (minChild, minUtility)
+
+
+    def maximize(self, gameState, depth):
+        agentID = 0
+        if len(gameState.getLegalActions(agentID)) == 0 or depth == 0:
+            score = self.evaluationFunction(gameState)
+            return None, score
+
+        maxChild = None
+        maxUtility = float("-inf")
+        utility= float("-inf")
+
+
+        for action in gameState.getLegalActions(agentID):
+            newState = gameState.generateSuccessor(agentID, action)
+            (step, utility) = self.minimize(newState, agentID + 1, depth)
+            if utility > maxUtility:
+                maxUtility = utility
+                maxChild = action
+
+        return (maxChild, maxUtility)
+
+
+
+
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
