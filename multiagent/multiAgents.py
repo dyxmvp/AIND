@@ -289,7 +289,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
         for action in gameState.getLegalActions(agentID):
             newState = gameState.generateSuccessor(agentID, action)
-            (step, utility) = self.minimize(newState, agentID + 1, depth, alpha, beta)
+            step, utility = self.minimize(newState, agentID + 1, depth, alpha, beta)
             if utility > maxUtility:
                 maxUtility = utility
                 maxChild = action
@@ -313,7 +313,61 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
           legal moves.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        self.agentNum = gameState.getNumAgents()
+        depth = self.depth
+
+        maxChild = None
+        maxUtility = float("-inf")
+        utility = float("-inf")
+        agentID = 0
+        for action in gameState.getLegalActions(agentID):
+            newState = gameState.generateSuccessor(agentID, action)
+            utility = self.expectMinimax(newState, agentID + 1, depth)
+            if utility > maxUtility:
+                maxUtility = utility
+                maxChild = action
+        return maxChild
+
+    def expectMinimax(self, gameState, agentID, depth):
+        if len(gameState.getLegalActions(agentID)) == 0:
+            score = self.evaluationFunction(gameState)
+            return score
+
+        #meanUtility = float("inf")
+        sumUtility = 0
+
+        if agentID == self.agentNum - 1:
+            for action in gameState.getLegalActions(agentID):
+                newState = gameState.generateSuccessor(agentID, action)
+                step, utility = self.maximize(newState, depth - 1)
+                sumUtility += utility
+
+        else:
+            for action in gameState.getLegalActions(agentID):
+                newState = gameState.generateSuccessor(agentID, action)
+                utility = self.expectMinimax(newState, agentID + 1, depth)
+                sumUtility += utility
+
+        return float(sumUtility) / len(gameState.getLegalActions(agentID))
+
+    def maximize(self, gameState, depth):
+        agentID = 0
+        if len(gameState.getLegalActions(agentID)) == 0 or depth == 0:
+            score = self.evaluationFunction(gameState)
+            return None, score
+
+        maxChild = None
+        maxUtility = float("-inf")
+        utility = float("-inf")
+
+        for action in gameState.getLegalActions(agentID):
+            newState = gameState.generateSuccessor(agentID, action)
+            utility = self.expectMinimax(newState, agentID + 1, depth)
+            if utility > maxUtility:
+                maxUtility = utility
+                maxChild = action
+
+        return maxChild, maxUtility
 
 def betterEvaluationFunction(currentGameState):
     """
@@ -323,7 +377,25 @@ def betterEvaluationFunction(currentGameState):
       DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    newPos = currentGameState.getPacmanPosition()
+    newFood = currentGameState.getFood()
+    newFood_number = currentGameState.getNumFood()
+    newGhostStates = currentGameState.getGhostStates()
+    distancetoGhost = []
+    d = 1
+    for ghostState in newGhostStates:
+        d = util.manhattanDistance(newPos, ghostState.getPosition())
+        if d > 1:
+            distancetoGhost.append(d)
+            d = 1
+        else:
+            d = 0
+            break
+    newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+
+    "*** YOUR CODE HERE ***"
+
+    return d * (10 * currentGameState.getScore() + sum(distancetoGhost) + 10 / (newFood_number + 1))
 
 # Abbreviation
 better = betterEvaluationFunction
