@@ -208,9 +208,6 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
 
 
-
-
-
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
       Your minimax agent with alpha-beta pruning (question 3)
@@ -221,7 +218,87 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
           Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        self.agentNum = gameState.getNumAgents()
+        depth = self.depth
+
+        maxChild = None
+        maxUtility = float("-inf")
+        utility = float("-inf")
+        agentID = 0
+
+        alpha = float("-inf")
+        beta = float("inf")
+
+        for action in gameState.getLegalActions(agentID):
+            newState = gameState.generateSuccessor(agentID, action)
+            (step, utility) = self.minimize(newState, agentID + 1, depth, alpha, beta)
+            if utility > maxUtility:
+                maxUtility = utility
+                maxChild = action
+            if maxUtility > beta:
+                break
+            if maxUtility > alpha:
+                alpha = maxUtility
+
+        return maxChild
+
+    def minimize(self, gameState, agentID, depth, alpha, beta):
+        if len(gameState.getLegalActions(agentID)) == 0:
+            score = self.evaluationFunction(gameState)
+            return None, score
+
+        minChild = None
+        minUtility = float("inf")
+        utility = float("inf")
+
+        if agentID == self.agentNum - 1:
+            for action in gameState.getLegalActions(agentID):
+                newState = gameState.generateSuccessor(agentID, action)
+                (step, utility) = self.maximize(newState, depth - 1, alpha, beta)
+                if utility < minUtility:
+                    minUtility = utility
+                    minChild = action
+                if minUtility < alpha:
+                    break
+                if minUtility < beta:
+                    beta = minUtility
+
+        else:
+            for action in gameState.getLegalActions(agentID):
+                newState = gameState.generateSuccessor(agentID, action)
+                (step, utility) = self.minimize(newState, agentID + 1, depth, alpha, beta)
+                if utility < minUtility:
+                    minUtility = utility
+                    minChild = action
+                if minUtility < alpha:
+                    break
+                if minUtility < beta:
+                    beta = minUtility
+
+        return (minChild, minUtility)
+
+    def maximize(self, gameState, depth, alpha, beta):
+        agentID = 0
+        if len(gameState.getLegalActions(agentID)) == 0 or depth == 0:
+            score = self.evaluationFunction(gameState)
+            return None, score
+
+        maxChild = None
+        maxUtility = float("-inf")
+        utility = float("-inf")
+
+        for action in gameState.getLegalActions(agentID):
+            newState = gameState.generateSuccessor(agentID, action)
+            (step, utility) = self.minimize(newState, agentID + 1, depth, alpha, beta)
+            if utility > maxUtility:
+                maxUtility = utility
+                maxChild = action
+            if maxUtility > beta:
+                break
+            if maxUtility > alpha:
+                alpha = maxUtility
+
+        return (maxChild, maxUtility)
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
